@@ -4,9 +4,11 @@ class MacvimKaoriya < Formula
   homepage 'http://code.google.com/p/macvim-kaoriya/'
   head 'https://github.com/splhack/macvim.git'
 
-  depends_on 'cmigemo'
+  depends_on 'cmigemo-mk'
   depends_on 'ctags-objc-ja'
-  depends_on 'gettext'
+  depends_on 'gettext-mk'
+
+  GETTEXT = "#{HOMEBREW_PREFIX}/Cellar/gettext-mk/0.18.1.1"
 
   def install
     ENV.remove_macosxsdk
@@ -28,7 +30,7 @@ class MacvimKaoriya < Formula
                           '--enable-ruby19interp=dynamic',
                           '--with-ruby19-command=ruby19'
 
-    gettext = "#{HOMEBREW_PREFIX}/Cellar/gettext/0.18.1.1/bin/"
+    gettext = "#{GETTEXT}/bin/"
     inreplace 'src/po/Makefile' do |s|
       s.gsub! /^(MSGFMT\s*=.*)(msgfmt.*)/, "\\1#{gettext}\\2"
       s.gsub! /^(XGETTEXT\s*=.*)(xgettext.*)/, "\\1#{gettext}\\2"
@@ -67,7 +69,7 @@ class MacvimKaoriya < Formula
     end
 
     [
-      "#{HOMEBREW_PREFIX}/Cellar/gettext/0.18.1.1/lib/libintl.8.dylib",
+      "#{GETTEXT}/lib/libintl.8.dylib",
       "#{HOMEBREW_PREFIX}/lib/libmigemo.1.1.0.dylib",
     ].each do |lib|
       newname = "@executable_path/../Frameworks/#{File.basename(lib)}"

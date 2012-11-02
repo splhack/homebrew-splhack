@@ -1,6 +1,6 @@
 require 'formula'
 
-class Cmigemo < Formula
+class CmigemoMk < Formula
   homepage 'http://www.kaoriya.net/software/cmigemo'
   head 'https://code.google.com/p/cmigemo/', :using => :hg
 
