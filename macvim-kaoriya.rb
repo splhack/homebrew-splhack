@@ -13,9 +13,12 @@ class MacvimKaoriya < Formula
   def install
     ENV.remove_macosxsdk
     ENV.macosxsdk '10.7'
+    ENV.append 'CFLAGS', '-mmacosx-version-min=10.7'
     ENV.append 'LDFLAGS', '-mmacosx-version-min=10.7 -headerpad_max_install_names'
     ENV.append 'VERSIONER_PERL_VERSION', '5.12'
     ENV.append 'VERSIONER_PYTHON_VERSION', '2.7'
+    ENV.append 'vi_cv_path_python3', '/usr/local/bin/python3'
+    ENV.append 'vi_cv_path_ruby19', '/usr/local/bin/ruby19'
 
     system './configure', "--prefix=#{prefix}",
                           '--with-features=huge',
@@ -27,8 +30,7 @@ class MacvimKaoriya < Formula
                           '--enable-pythoninterp=dynamic',
                           '--enable-python3interp=dynamic',
                           '--enable-rubyinterp=dynamic',
-                          '--enable-ruby19interp=dynamic',
-                          '--with-ruby19-command=ruby19'
+                          '--enable-ruby19interp=dynamic'
 
     gettext = "#{GETTEXT}/bin/"
     inreplace 'src/po/Makefile' do |s|
@@ -69,7 +71,7 @@ class MacvimKaoriya < Formula
     end
 
     [
-      "#{GETTEXT}/lib/libintl.8.dylib",
+      "#{HOMEBREW_PREFIX}/opt/gettext-mk/lib/libintl.8.dylib",
       "#{HOMEBREW_PREFIX}/lib/libmigemo.1.1.0.dylib",
     ].each do |lib|
       newname = "@executable_path/../Frameworks/#{File.basename(lib)}"
