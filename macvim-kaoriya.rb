@@ -13,6 +13,7 @@ class MacvimKaoriya < Formula
   def install
     ENV.remove_macosxsdk
     ENV.macosxsdk '10.7'
+    ENV.append 'MACOSX_DEPLOYMENT_TARGET', '10.7'
     ENV.append 'CFLAGS', '-mmacosx-version-min=10.7'
     ENV.append 'LDFLAGS', '-mmacosx-version-min=10.7 -headerpad_max_install_names'
     ENV.append 'VERSIONER_PERL_VERSION', '5.12'
