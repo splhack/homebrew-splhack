@@ -19,7 +19,7 @@ class MacvimKaoriya < Formula
     ENV.append 'VERSIONER_PERL_VERSION', '5.12'
     ENV.append 'VERSIONER_PYTHON_VERSION', '2.7'
     ENV.append 'vi_cv_path_python3', '/usr/local/bin/python3'
-    ENV.append 'vi_cv_path_ruby19', '/usr/local/bin/ruby19'
+    ENV.append 'vi_cv_path_ruby19', '/usr/local/bin/ruby20'
 
     system './configure', "--prefix=#{prefix}",
                           '--with-features=huge',
