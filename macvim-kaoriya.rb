@@ -33,7 +33,9 @@ class MacvimKaoriya < Formula
                           '--enable-rubyinterp=dynamic',
                           '--enable-ruby19interp=dynamic',
                           '--enable-luainterp=dynamic',
-                          '--with-lua-prefix=/usr/local'
+                          '--with-lua-prefix=/usr/local',
+                          '--enable-lua52interp=dynamic',
+                          '--with-lua52-prefix=/usr/local/Cellar/lua52/5.2.1'
 
     gettext = "#{GETTEXT}/bin/"
     inreplace 'src/po/Makefile' do |s|
