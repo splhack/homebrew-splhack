@@ -4,9 +4,14 @@ class MacvimKaoriya < Formula
   homepage 'http://code.google.com/p/macvim-kaoriya/'
   head 'https://github.com/splhack/macvim.git'
 
-  depends_on 'cmigemo-mk'
-  depends_on 'ctags-objc-ja'
-  depends_on 'gettext-mk'
+  depends_on 'cmigemo-mk' => :build
+  depends_on 'ctags-objc-ja' => :build
+  depends_on 'gettext-mk' => :build
+  depends_on 'ruby' => :build
+  depends_on 'python3' => :build
+  depends_on 'lua' => :build
+  depends_on 'lua52' => :build
+  depends_on 'luajit' => :build
 
   GETTEXT = "#{HOMEBREW_PREFIX}/Cellar/gettext-mk/0.18.1.1"
 
@@ -55,7 +60,8 @@ class MacvimKaoriya < Formula
 
     app = prefix + 'MacVim.app/Contents'
     macos = app + 'MacOS'
-    runtime = app + 'Resources/vim/runtime'
+    vimdir = app + 'Resources/vim'
+    runtime = vimdir + 'runtime'
 
     macos.install 'src/MacVim/mvim'
     mvim = macos + 'mvim'
@@ -78,10 +84,15 @@ class MacvimKaoriya < Formula
     [
       "#{HOMEBREW_PREFIX}/opt/gettext-mk/lib/libintl.8.dylib",
       "#{HOMEBREW_PREFIX}/lib/libmigemo.1.1.0.dylib",
+      "#{HOMEBREW_PREFIX}/lib/libluajit-5.1.dylib",
     ].each do |lib|
       newname = "@executable_path/../Frameworks/#{File.basename(lib)}"
       system "install_name_tool -change #{lib} #{newname} #{macos + 'Vim'}"
       cp lib, app + 'Frameworks'
     end
+
+    File.open(vimdir + 'vimrc', 'a').write <<EOL
+let $LUA_DLL = simplify($VIM . '/../../Frameworks/libluajit-5.1.dylib')
+EOL
   end
 end
