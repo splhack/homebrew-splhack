@@ -21,12 +21,13 @@ class MacvimKaoriya < Formula
     ENV.append 'vi_cv_path_python3', '/usr/local/bin/python3'
     ENV.append 'vi_cv_path_ruby19', '/usr/local/bin/ruby20'
 
+    luajit = '2.0.2'
     [
       "#{HOMEBREW_PREFIX}/Cellar/python3/3.3.2/bin/python3",
       "#{HOMEBREW_PREFIX}/Cellar/ruby/2.0.0-p247/bin/ruby20",
       "#{HOMEBREW_PREFIX}/Cellar/lua/5.1.5/bin/lua",
       "#{HOMEBREW_PREFIX}/Cellar/lua52/5.2.1/bin/lua",
-      "#{HOMEBREW_PREFIX}/Cellar/luajit/2.0.2/bin/luajit",
+      "#{HOMEBREW_PREFIX}/Cellar/luajit/#{luajit}/bin/luajit",
     ].each do |file|
       raise file unless File.exist?(file)
     end
@@ -64,6 +65,7 @@ class MacvimKaoriya < Formula
     prefix.install 'src/MacVim/build/Release/MacVim.app'
 
     app = prefix + 'MacVim.app/Contents'
+    frameworks = app + 'Frameworks'
     macos = app + 'MacOS'
     vimdir = app + 'Resources/vim'
     runtime = vimdir + 'runtime'
@@ -89,15 +91,15 @@ class MacvimKaoriya < Formula
     [
       "#{HOMEBREW_PREFIX}/opt/gettext-mk/lib/libintl.8.dylib",
       "#{HOMEBREW_PREFIX}/lib/libmigemo.1.1.0.dylib",
-      "#{HOMEBREW_PREFIX}/lib/libluajit-5.1.dylib",
     ].each do |lib|
       newname = "@executable_path/../Frameworks/#{File.basename(lib)}"
       system "install_name_tool -change #{lib} #{newname} #{macos + 'Vim'}"
-      cp lib, app + 'Frameworks'
+      cp lib, frameworks
     end
 
+    cp "#{HOMEBREW_PREFIX}/lib/libluajit-5.1.#{luajit}.dylib", frameworks
     File.open(vimdir + 'vimrc', 'a').write <<EOL
-let $LUA_DLL = simplify($VIM . '/../../Frameworks/libluajit-5.1.dylib')
+let $LUA_DLL = simplify($VIM . '/../../Frameworks/libluajit-5.1.#{luajit}.dylib')
 EOL
   end
 end
