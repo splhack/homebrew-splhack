@@ -7,11 +7,6 @@ class MacvimKaoriya < Formula
   depends_on 'cmigemo-mk' => :build
   depends_on 'ctags-objc-ja' => :build
   depends_on 'gettext-mk' => :build
-  depends_on 'ruby' => :build
-  depends_on 'python3' => :build
-  depends_on 'lua' => :build
-  depends_on 'lua52' => :build
-  depends_on 'luajit' => :build
 
   GETTEXT = "#{HOMEBREW_PREFIX}/Cellar/gettext-mk/0.18.1.1"
 
@@ -25,6 +20,16 @@ class MacvimKaoriya < Formula
     ENV.append 'VERSIONER_PYTHON_VERSION', '2.7'
     ENV.append 'vi_cv_path_python3', '/usr/local/bin/python3'
     ENV.append 'vi_cv_path_ruby19', '/usr/local/bin/ruby20'
+
+    [
+      "#{HOMEBREW_PREFIX}/Cellar/python3/3.3.2/bin/python3",
+      "#{HOMEBREW_PREFIX}/Cellar/ruby/2.0.0-p247/bin/ruby20",
+      "#{HOMEBREW_PREFIX}/Cellar/lua/5.1.5/bin/lua",
+      "#{HOMEBREW_PREFIX}/Cellar/lua52/5.2.1/bin/lua",
+      "#{HOMEBREW_PREFIX}/Cellar/luajit/2.0.2/bin/luajit",
+    ].each do |file|
+      raise file unless File.exist?(file)
+    end
 
     system './configure', "--prefix=#{prefix}",
                           '--with-features=huge',
