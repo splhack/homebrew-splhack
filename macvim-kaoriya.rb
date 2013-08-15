@@ -8,9 +8,12 @@ class MacvimKaoriya < Formula
   depends_on 'ctags-objc-ja' => :build
   depends_on 'gettext-mk' => :build
 
+  option 'with-binary-release', ''
+
   GETTEXT = "#{HOMEBREW_PREFIX}/Cellar/gettext-mk/0.18.1.1"
 
   def install
+    ENV["HOMEBREW_CCCFG"] = "bi6" if build.with? 'binary-release'
     ENV.remove_macosxsdk
     ENV.macosxsdk '10.7'
     ENV.append 'MACOSX_DEPLOYMENT_TARGET', '10.7'
