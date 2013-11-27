@@ -2,7 +2,7 @@ require 'formula'
 
 class CmigemoMk < Formula
   homepage 'http://www.kaoriya.net/software/cmigemo'
-  head 'https://code.google.com/p/cmigemo/', :using => :hg
+  head 'https://github.com/koron/cmigemo', :using => :git
 
   depends_on 'nkf' => :build
 
