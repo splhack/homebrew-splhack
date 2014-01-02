@@ -72,6 +72,9 @@ class MacvimKaoriya < Formula
     macos = app + 'MacOS'
     vimdir = app + 'Resources/vim'
     runtime = vimdir + 'runtime'
+    docja = vimdir + 'plugins/vimdoc-ja/doc'
+
+    system "#{macos + 'Vim'} -c 'helptags #{docja}' -c q"
 
     macos.install 'src/MacVim/mvim'
     mvim = macos + 'mvim'
