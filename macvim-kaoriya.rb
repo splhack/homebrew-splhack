@@ -13,12 +13,12 @@ class MacvimKaoriya < Formula
   GETTEXT = "#{HOMEBREW_PREFIX}/Cellar/gettext-mk/0.18.1.1"
 
   def install
-    ENV["HOMEBREW_CCCFG"] = "bi6" if build.with? 'binary-release'
+    ENV["HOMEBREW_OPTFLAGS"] = "-march=core2" if build.with? 'binary-release'
     ENV.remove_macosxsdk
-    ENV.macosxsdk '10.7'
-    ENV.append 'MACOSX_DEPLOYMENT_TARGET', '10.7'
-    ENV.append 'CFLAGS', '-mmacosx-version-min=10.7'
-    ENV.append 'LDFLAGS', '-mmacosx-version-min=10.7 -headerpad_max_install_names'
+    ENV.macosxsdk '10.8'
+    ENV.append 'MACOSX_DEPLOYMENT_TARGET', '10.8'
+    ENV.append 'CFLAGS', '-mmacosx-version-min=10.8'
+    ENV.append 'LDFLAGS', '-mmacosx-version-min=10.8 -headerpad_max_install_names'
     ENV.append 'VERSIONER_PERL_VERSION', '5.12'
     ENV.append 'VERSIONER_PYTHON_VERSION', '2.7'
     ENV.append 'vi_cv_path_python3', '/usr/local/bin/python3'
