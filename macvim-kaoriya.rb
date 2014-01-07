@@ -1,5 +1,10 @@
 require 'formula'
 
+class CMapResources < Formula
+  url 'http://jaist.dl.sourceforge.net/project/cmap.adobe/cmapresources_japan1-6.tar.z'
+  sha1 '9467d7ed73c16856d2a49b5897fc5ea477f3a111'
+end
+
 class MacvimKaoriya < Formula
   homepage 'http://code.google.com/p/macvim-kaoriya/'
   head 'https://github.com/splhack/macvim.git'
@@ -92,6 +97,10 @@ class MacvimKaoriya < Formula
     mkdir_p dict
     Dir.glob("#{HOMEBREW_PREFIX}/share/migemo/utf-8/*").each do |f|
       cp f, dict
+    end
+
+    CMapResources.new.brew do
+      cp 'CMap/UniJIS-UTF8-H', runtime/'print/UniJIS-UTF8-H.ps'
     end
 
     [
