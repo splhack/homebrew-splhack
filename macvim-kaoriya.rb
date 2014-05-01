@@ -117,6 +117,5 @@ class MacvimKaoriya < Formula
     File.open(vimdir + 'vimrc', 'a').write <<EOL
 let $LUA_DLL = simplify($VIM . '/../../Frameworks/libluajit-5.1.2.dylib')
 EOL
-system "zsh"
   end
 end
