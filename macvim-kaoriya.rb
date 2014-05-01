@@ -27,15 +27,14 @@ class MacvimKaoriya < Formula
     ENV.append 'VERSIONER_PERL_VERSION', '5.12'
     ENV.append 'VERSIONER_PYTHON_VERSION', '2.7'
     ENV.append 'vi_cv_path_python3', '/usr/local/bin/python3'
-    ENV.append 'vi_cv_path_ruby19', '/usr/local/bin/ruby20'
+    ENV.append 'vi_cv_path_ruby19', '/usr/local/bin/ruby'
 
-    luajit = '2.0.2'
     [
-      "#{HOMEBREW_PREFIX}/Cellar/python3/3.3.2/bin/python3",
-      "#{HOMEBREW_PREFIX}/Cellar/ruby/2.0.0-p247/bin/ruby20",
+      "#{HOMEBREW_PREFIX}/Cellar/python3/3.4.0_1/bin/python3",
+      "#{HOMEBREW_PREFIX}/Cellar/ruby/2.1.1_1/bin/ruby",
       "#{HOMEBREW_PREFIX}/Cellar/lua/5.1.5/bin/lua",
-      "#{HOMEBREW_PREFIX}/Cellar/lua52/5.2.1/bin/lua",
-      "#{HOMEBREW_PREFIX}/Cellar/luajit/#{luajit}/bin/luajit",
+      "#{HOMEBREW_PREFIX}/Cellar/lua52/5.2.3/bin/lua",
+      "#{HOMEBREW_PREFIX}/Cellar/luajit/2.0.3/bin/luajit",
     ].each do |file|
       raise file unless File.exist?(file)
     end
@@ -50,11 +49,13 @@ class MacvimKaoriya < Formula
                           '--enable-pythoninterp=dynamic',
                           '--enable-python3interp=dynamic',
                           '--enable-rubyinterp=dynamic',
+                          '--with-ruby-command=/usr/bin/ruby',
                           '--enable-ruby19interp=dynamic',
+                          '--with-ruby19-command=/usr/local/bin/ruby',
                           '--enable-luainterp=dynamic',
                           '--with-lua-prefix=/usr/local',
                           '--enable-lua52interp=dynamic',
-                          '--with-lua52-prefix=/usr/local/Cellar/lua52/5.2.1'
+                          '--with-lua52-prefix=/usr/local/Cellar/lua52/5.2.3'
 
     gettext = "#{GETTEXT}/bin/"
     inreplace 'src/po/Makefile' do |s|
@@ -64,7 +65,7 @@ class MacvimKaoriya < Formula
     end
 
     inreplace 'src/auto/config.mk' do |s|
-      s.gsub! "-L#{HOMEBREW_PREFIX}/Cellar/readline/6.2.2/lib", ''
+      s.gsub! "-L#{HOMEBREW_PREFIX}/Cellar/readline/6.3.3/lib", ''
     end
 
     Dir.chdir('src/po') {system 'make'}
@@ -112,9 +113,10 @@ class MacvimKaoriya < Formula
       cp lib, frameworks
     end
 
-    cp "#{HOMEBREW_PREFIX}/lib/libluajit-5.1.#{luajit}.dylib", frameworks
+    cp "#{HOMEBREW_PREFIX}/lib/libluajit-5.1.2.dylib", frameworks
     File.open(vimdir + 'vimrc', 'a').write <<EOL
-let $LUA_DLL = simplify($VIM . '/../../Frameworks/libluajit-5.1.#{luajit}.dylib')
+let $LUA_DLL = simplify($VIM . '/../../Frameworks/libluajit-5.1.2.dylib')
 EOL
+system "zsh"
   end
 end
