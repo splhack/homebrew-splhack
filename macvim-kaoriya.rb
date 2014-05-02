@@ -64,10 +64,6 @@ class MacvimKaoriya < Formula
       s.gsub! /^(MSGMERGE\s*=.*)(msgmerge.*)/, "\\1#{gettext}\\2"
     end
 
-    inreplace 'src/auto/config.mk' do |s|
-      s.gsub! "-L#{HOMEBREW_PREFIX}/Cellar/readline/6.3.3/lib", ''
-    end
-
     Dir.chdir('src/po') {system 'make'}
     system 'make'
 
