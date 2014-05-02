@@ -6,6 +6,8 @@ class CmigemoMk < Formula
 
   depends_on 'nkf' => :build
 
+  option 'with-binary-release', ''
+
   def patches
     DATA
   end

@@ -16,6 +16,7 @@ class GettextMk < Formula
 
   #option :universal
   option 'with-examples', 'Keep example files'
+  option 'with-binary-release', ''
 
   def patches
     # Patch to allow building with Xcode 4; safe for any compiler.

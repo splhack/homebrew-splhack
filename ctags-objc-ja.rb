@@ -6,6 +6,8 @@ class CtagsObjcJa < Formula
 
   depends_on "autoconf" => :build
 
+  option 'with-binary-release', ''
+
   def install
     ENV["HOMEBREW_OPTFLAGS"] = "-march=core2" if build.with? 'binary-release'
     ENV.append 'LDFLAGS', '-headerpad_max_install_names'

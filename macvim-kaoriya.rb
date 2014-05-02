@@ -102,7 +102,7 @@ class MacvimKaoriya < Formula
 
     [
       "#{HOMEBREW_PREFIX}/opt/gettext-mk/lib/libintl.8.dylib",
-      "#{HOMEBREW_PREFIX}/lib/libmigemo.1.1.0.dylib",
+      "#{HOMEBREW_PREFIX}/lib/libmigemo.1.dylib",
     ].each do |lib|
       newname = "@executable_path/../Frameworks/#{File.basename(lib)}"
       system "install_name_tool -change #{lib} #{newname} #{macos + 'Vim'}"
