@@ -19,16 +19,12 @@ class MacvimKaoriya < Formula
 
   def install
     ENV["HOMEBREW_OPTFLAGS"] = "-march=core2" if build.with? 'binary-release'
-    ENV.remove_macosxsdk
-    ENV.macosxsdk '10.8'
-    ENV.append 'MACOSX_DEPLOYMENT_TARGET', '10.8'
-    ENV.append 'CFLAGS', '-mmacosx-version-min=10.8'
-    ENV.append 'LDFLAGS', '-mmacosx-version-min=10.8 -headerpad_max_install_names'
+    ENV.append 'LDFLAGS', '-headerpad_max_install_names'
     ENV.append 'VERSIONER_PERL_VERSION', '5.12'
     ENV.append 'VERSIONER_PYTHON_VERSION', '2.7'
     ENV.append 'vi_cv_path_python3', '/usr/local/bin/python3'
-    ENV.append 'vi_cv_path_ruby19', '/usr/local/bin/ruby'
 
+    error = nil
     [
       "#{HOMEBREW_PREFIX}/Cellar/python3/3.4.0_1/bin/python3",
       "#{HOMEBREW_PREFIX}/Cellar/ruby/2.1.1_1/bin/ruby",
@@ -36,8 +32,12 @@ class MacvimKaoriya < Formula
       "#{HOMEBREW_PREFIX}/Cellar/lua52/5.2.3/bin/lua",
       "#{HOMEBREW_PREFIX}/Cellar/luajit/2.0.3/bin/luajit",
     ].each do |file|
-      raise file unless File.exist?(file)
+      unless File.exist?(file)
+        error ||= "brew install python3 ruby lua lua52 luajit\n"
+        error += "can't find #{file}\n"
+      end
     end
+    raise error unless error.nil?
 
     system './configure', "--prefix=#{prefix}",
                           '--with-features=huge',

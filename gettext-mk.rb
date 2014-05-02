@@ -32,11 +32,8 @@ class GettextMk < Formula
 
   def install
     ENV.libxml2
-    ENV.universal_binary if build.universal?
-
-    ENV.remove_macosxsdk
-    ENV.macosxsdk '10.7'
-    ENV.append 'LDFLAGS', '-mmacosx-version-min=10.7 -headerpad_max_install_names'
+    ENV["HOMEBREW_OPTFLAGS"] = "-march=core2" if build.with? 'binary-release'
+    ENV.append 'LDFLAGS', '-headerpad_max_install_names'
 
     system "./configure", "--disable-dependency-tracking",
                           "--disable-debug",
