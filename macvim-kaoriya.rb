@@ -19,7 +19,9 @@ class MacvimKaoriya < Formula
 
   def install
     ENV["HOMEBREW_OPTFLAGS"] = "-march=core2" if build.with? 'binary-release'
-    ENV.append 'LDFLAGS', '-headerpad_max_install_names'
+    ENV.append 'MACOSX_DEPLOYMENT_TARGET', '10.8'
+    ENV.append 'CFLAGS', '-mmacosx-version-min=10.8'
+    ENV.append 'LDFLAGS', '-mmacosx-version-min=10.8 -headerpad_max_install_names'
     ENV.append 'VERSIONER_PERL_VERSION', '5.12'
     ENV.append 'VERSIONER_PYTHON_VERSION', '2.7'
     ENV.append 'vi_cv_path_python3', '/usr/local/bin/python3'
@@ -51,11 +53,11 @@ class MacvimKaoriya < Formula
                           '--enable-rubyinterp=dynamic',
                           '--with-ruby-command=/usr/bin/ruby',
                           '--enable-ruby19interp=dynamic',
-                          '--with-ruby19-command=/usr/local/bin/ruby',
+                          "--with-ruby19-command=#{HOMEBREW_PREFIX}/Cellar/ruby/2.1.1_1/bin/ruby",
                           '--enable-luainterp=dynamic',
-                          '--with-lua-prefix=/usr/local',
+                          "--with-lua-prefix=#{HOMEBREW_PREFIX}/Cellar/lua/5.1.5",
                           '--enable-lua52interp=dynamic',
-                          '--with-lua52-prefix=/usr/local/Cellar/lua52/5.2.3'
+                          "--with-lua52-prefix=#{HOMEBREW_PREFIX}/Cellar/lua52/5.2.3"
 
     gettext = "#{GETTEXT}/bin/"
     inreplace 'src/po/Makefile' do |s|
