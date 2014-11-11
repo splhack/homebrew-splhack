@@ -1,10 +1,5 @@
 require 'formula'
 
-class CMapResources < Formula
-  url 'http://jaist.dl.sourceforge.net/project/cmap.adobe/cmapresources_japan1-6.tar.z'
-  sha1 '9467d7ed73c16856d2a49b5897fc5ea477f3a111'
-end
-
 class MacvimKaoriya < Formula
   homepage 'http://code.google.com/p/macvim-kaoriya/'
   head 'https://github.com/splhack/macvim.git'
@@ -61,7 +56,6 @@ class MacvimKaoriya < Formula
 
     gettext = "#{GETTEXT}/bin/"
     inreplace 'src/po/Makefile' do |s|
-      s.gsub! /^(MSGFMT\s*=.*)(msgfmt.*)/, "\\1#{gettext}\\2"
       s.gsub! /^(XGETTEXT\s*=.*)(xgettext.*)/, "\\1#{gettext}\\2"
       s.gsub! /^(MSGMERGE\s*=.*)(msgmerge.*)/, "\\1#{gettext}\\2"
     end
@@ -98,7 +92,7 @@ class MacvimKaoriya < Formula
       cp f, dict
     end
 
-    CMapResources.new.brew do
+    resource("CMapResources").stage do
       cp 'CMap/UniJIS-UTF8-H', runtime/'print/UniJIS-UTF8-H.ps'
     end
 
@@ -115,5 +109,10 @@ class MacvimKaoriya < Formula
     File.open(vimdir + 'vimrc', 'a').write <<EOL
 let $LUA_DLL = simplify($VIM . '/../../Frameworks/libluajit-5.1.2.dylib')
 EOL
+  end
+
+  resource("CMapResources") do
+    url 'http://jaist.dl.sourceforge.net/project/cmap.adobe/cmapresources_japan1-6.tar.z'
+    sha1 '9467d7ed73c16856d2a49b5897fc5ea477f3a111'
   end
 end
