@@ -23,14 +23,14 @@ class MacvimKaoriya < Formula
 
     error = nil
     [
-      "#{HOMEBREW_PREFIX}/Cellar/python3/3.4.0_1/bin/python3",
-      "#{HOMEBREW_PREFIX}/Cellar/ruby/2.1.1_1/bin/ruby",
-      "#{HOMEBREW_PREFIX}/Cellar/lua/5.1.5/bin/lua",
-      "#{HOMEBREW_PREFIX}/Cellar/lua52/5.2.3/bin/lua",
-      "#{HOMEBREW_PREFIX}/Cellar/luajit/2.0.3/bin/luajit",
+      "#{HOMEBREW_PREFIX}/Cellar/python3/3.4.2_1/bin/python3",
+      "#{HOMEBREW_PREFIX}/Cellar/ruby/2.2.0/bin/ruby",
+      "#{HOMEBREW_PREFIX}/Cellar/lua/5.2.3_1/bin/lua",
+      "#{HOMEBREW_PREFIX}/Cellar/lua51/5.1.5/bin/lua5.1",
+      "#{HOMEBREW_PREFIX}/Cellar/luajit/2.0.3_1/bin/luajit",
     ].each do |file|
       unless File.exist?(file)
-        error ||= "brew install python3 ruby lua lua52 luajit\n"
+        error ||= "brew install python3 ruby lua lua51 luajit\n"
         error += "can't find #{file}\n"
       end
     end
@@ -48,11 +48,11 @@ class MacvimKaoriya < Formula
                           '--enable-rubyinterp=dynamic',
                           '--with-ruby-command=/usr/bin/ruby',
                           '--enable-ruby19interp=dynamic',
-                          "--with-ruby19-command=#{HOMEBREW_PREFIX}/Cellar/ruby/2.1.1_1/bin/ruby",
+                          "--with-ruby19-command=#{HOMEBREW_PREFIX}/Cellar/ruby/2.2.0/bin/ruby",
                           '--enable-luainterp=dynamic',
-                          "--with-lua-prefix=#{HOMEBREW_PREFIX}/Cellar/lua/5.1.5",
+                          "--with-lua-prefix=#{HOMEBREW_PREFIX}/Cellar/lua51/5.1.5",
                           '--enable-lua52interp=dynamic',
-                          "--with-lua52-prefix=#{HOMEBREW_PREFIX}/Cellar/lua52/5.2.3"
+                          "--with-lua52-prefix=#{HOMEBREW_PREFIX}/Cellar/lua/5.2.3_1"
 
     gettext = "#{GETTEXT}/bin/"
     inreplace 'src/po/Makefile' do |s|
