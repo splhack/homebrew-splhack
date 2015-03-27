@@ -10,9 +10,28 @@ class MacvimKaoriya < Formula
 
   option 'with-binary-release', ''
 
-  GETTEXT = "#{HOMEBREW_PREFIX}/Cellar/gettext-mk/0.18.1.1"
+  def get_path(name)
+    f = Formulary.factory(name)
+    if f.rack.directory?
+      kegs = f.rack.subdirs.map { |keg| Keg.new(keg) }.sort_by(&:version)
+      return kegs.first.to_s unless kegs.empty?
+    end
+    nil
+  end
 
   def install
+    error = nil
+    depend_formulas = %w(gettext-mk lua lua51 luajit python3 ruby)
+    depend_formulas.each do |formula|
+      var = "@" + formula.gsub("-", "_")
+      instance_variable_set(var, get_path(formula))
+      if instance_variable_get(var).nil?
+        error ||= "brew install " + depend_formulas.join(" ") + "\n"
+        error += "can't find #{formula}\n"
+      end
+    end
+    raise error unless error.nil?
+
     ENV["HOMEBREW_OPTFLAGS"] = "-march=core2" if build.with? 'binary-release'
     ENV.append 'MACOSX_DEPLOYMENT_TARGET', '10.8'
     ENV.append 'CFLAGS', '-mmacosx-version-min=10.8'
@@ -20,21 +39,6 @@ class MacvimKaoriya < Formula
     ENV.append 'VERSIONER_PERL_VERSION', '5.16'
     ENV.append 'VERSIONER_PYTHON_VERSION', '2.7'
     ENV.append 'vi_cv_path_python3', '/usr/local/bin/python3'
-
-    error = nil
-    [
-      "#{HOMEBREW_PREFIX}/Cellar/python3/3.4.0_1/bin/python3",
-      "#{HOMEBREW_PREFIX}/Cellar/ruby/2.1.1_1/bin/ruby",
-      "#{HOMEBREW_PREFIX}/Cellar/lua/5.1.5/bin/lua",
-      "#{HOMEBREW_PREFIX}/Cellar/lua52/5.2.3/bin/lua",
-      "#{HOMEBREW_PREFIX}/Cellar/luajit/2.0.3/bin/luajit",
-    ].each do |file|
-      unless File.exist?(file)
-        error ||= "brew install python3 ruby lua lua52 luajit\n"
-        error += "can't find #{file}\n"
-      end
-    end
-    raise error unless error.nil?
 
     system './configure', "--prefix=#{prefix}",
                           '--with-features=huge',
@@ -48,13 +52,13 @@ class MacvimKaoriya < Formula
                           '--enable-rubyinterp=dynamic',
                           '--with-ruby-command=/usr/bin/ruby',
                           '--enable-ruby19interp=dynamic',
-                          "--with-ruby19-command=#{HOMEBREW_PREFIX}/Cellar/ruby/2.1.1_1/bin/ruby",
+                          "--with-ruby19-command=#{@ruby}/bin/ruby",
                           '--enable-luainterp=dynamic',
-                          "--with-lua-prefix=#{HOMEBREW_PREFIX}/Cellar/lua/5.1.5",
+                          "--with-lua-prefix=#{@lua51}",
                           '--enable-lua52interp=dynamic',
-                          "--with-lua52-prefix=#{HOMEBREW_PREFIX}/Cellar/lua52/5.2.3"
+                          "--with-lua52-prefix=#{@lua}"
 
-    gettext = "#{GETTEXT}/bin/"
+    gettext = "#{@gettext_mk}/bin/"
     inreplace 'src/po/Makefile' do |s|
       s.gsub! /^(XGETTEXT\s*=.*)(xgettext.*)/, "\\1#{gettext}\\2"
       s.gsub! /^(MSGMERGE\s*=.*)(msgmerge.*)/, "\\1#{gettext}\\2"
@@ -105,9 +109,9 @@ class MacvimKaoriya < Formula
       cp lib, frameworks
     end
 
-    cp "#{HOMEBREW_PREFIX}/lib/libluajit-5.1.2.dylib", frameworks
+    cp "#{@luajit}/lib/libluajit-5.1.dylib", frameworks
     File.open(vimdir + 'vimrc', 'a').write <<EOL
-let $LUA_DLL = simplify($VIM . '/../../Frameworks/libluajit-5.1.2.dylib')
+let $LUA_DLL = simplify($VIM . '/../../Frameworks/libluajit-5.1.dylib')
 EOL
   end
 
