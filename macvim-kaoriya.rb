@@ -14,7 +14,7 @@ class MacvimKaoriya < Formula
     f = Formulary.factory(name)
     if f.rack.directory?
       kegs = f.rack.subdirs.map { |keg| Keg.new(keg) }.sort_by(&:version)
-      return kegs.first.to_s unless kegs.empty?
+      return kegs.last.to_s unless kegs.empty?
     end
     nil
   end
@@ -39,6 +39,7 @@ class MacvimKaoriya < Formula
     ENV.append 'VERSIONER_PERL_VERSION', '5.16'
     ENV.append 'VERSIONER_PYTHON_VERSION', '2.7'
     ENV.append 'vi_cv_path_python3', '/usr/local/bin/python3'
+    ENV.append 'vi_cv_path_plain_lua', '/usr/local/bin/lua-5.1'
 
     system './configure', "--prefix=#{prefix}",
                           '--with-features=huge',
