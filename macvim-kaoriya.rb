@@ -110,9 +110,9 @@ class MacvimKaoriya < Formula
       cp lib, frameworks
     end
 
-    cp "#{@luajit}/lib/libluajit-5.1.dylib", frameworks
+    cp "#{@luajit}/lib/libluajit-5.1.2.dylib", frameworks
     File.open(vimdir + 'vimrc', 'a').write <<EOL
-let $LUA_DLL = simplify($VIM . '/../../Frameworks/libluajit-5.1.dylib')
+let $LUA_DLL = simplify($VIM . '/../../Frameworks/libluajit-5.1.2.dylib')
 EOL
   end
 
