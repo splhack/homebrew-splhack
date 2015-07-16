@@ -117,7 +117,7 @@ EOL
   end
 
   resource("CMapResources") do
-    url 'http://jaist.dl.sourceforge.net/project/cmap.adobe/cmapresources_japan1-6.tar.z'
-    sha1 '9467d7ed73c16856d2a49b5897fc5ea477f3a111'
+    url 'https://github.com/adobe-type-tools/cmap-resources/raw/master/cmapresources_japan1-6.zip'
+    sha1 '83b148d19d5ad6e2d15c638a14eeec77c8939451'
   end
 end
