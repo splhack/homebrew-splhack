@@ -6,7 +6,7 @@ class MacvimKaoriya < Formula
 
   depends_on 'cmigemo-mk' => :build
   depends_on 'ctags-objc-ja' => :build
-  depends_on 'gettext-mk' => :build
+  depends_on 'gettext' => :build
 
   option 'with-binary-release', ''
 
@@ -21,7 +21,7 @@ class MacvimKaoriya < Formula
 
   def install
     error = nil
-    depend_formulas = %w(gettext-mk lua lua51 luajit python3 ruby)
+    depend_formulas = %w(gettext lua lua51 luajit python3 ruby)
     depend_formulas.each do |formula|
       var = "@" + formula.gsub("-", "_")
       instance_variable_set(var, get_path(formula))
@@ -32,10 +32,11 @@ class MacvimKaoriya < Formula
     end
     raise error unless error.nil?
 
-    ENV["HOMEBREW_OPTFLAGS"] = "-march=core2" if build.with? 'binary-release'
-    ENV.append 'MACOSX_DEPLOYMENT_TARGET', '10.8'
-    ENV.append 'CFLAGS', '-mmacosx-version-min=10.8'
-    ENV.append 'LDFLAGS', '-mmacosx-version-min=10.8 -headerpad_max_install_names'
+    if build.with? 'binary-release'
+      ENV.append 'MACOSX_DEPLOYMENT_TARGET', '10.9'
+      ENV.append 'CFLAGS', '-mmacosx-version-min=10.9'
+      ENV.append 'LDFLAGS', '-mmacosx-version-min=10.9 -headerpad_max_install_names'
+    end
     ENV.append 'VERSIONER_PERL_VERSION', '5.16'
     ENV.append 'VERSIONER_PYTHON_VERSION', '2.7'
     ENV.append 'vi_cv_path_python3', '/usr/local/bin/python3'
@@ -59,13 +60,7 @@ class MacvimKaoriya < Formula
                           '--enable-lua52interp=dynamic',
                           "--with-lua52-prefix=#{@lua}"
 
-    gettext = "#{@gettext_mk}/bin/"
-    inreplace 'src/po/Makefile' do |s|
-      s.gsub! /^(XGETTEXT\s*=.*)(xgettext.*)/, "\\1#{gettext}\\2"
-      s.gsub! /^(MSGMERGE\s*=.*)(msgmerge.*)/, "\\1#{gettext}\\2"
-    end
-
-    Dir.chdir('src/po') {system 'make'}
+    system "PATH=$PATH:#{@gettext}/bin make -C src/po MSGFMT=#{@gettext}/bin/msgfmt"
     system 'make'
 
     prefix.install 'src/MacVim/build/Release/MacVim.app'
@@ -102,7 +97,7 @@ class MacvimKaoriya < Formula
     end
 
     [
-      "#{HOMEBREW_PREFIX}/opt/gettext-mk/lib/libintl.8.dylib",
+      "#{HOMEBREW_PREFIX}/opt/gettext/lib/libintl.8.dylib",
       "#{HOMEBREW_PREFIX}/lib/libmigemo.1.dylib",
     ].each do |lib|
       newname = "@executable_path/../Frameworks/#{File.basename(lib)}"

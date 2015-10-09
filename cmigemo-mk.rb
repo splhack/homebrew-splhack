@@ -6,14 +6,11 @@ class CmigemoMk < Formula
 
   depends_on 'nkf' => :build
 
-  option 'with-binary-release', ''
-
   def patches
     DATA
   end
 
   def install
-    ENV["HOMEBREW_OPTFLAGS"] = "-march=core2" if build.with? 'binary-release'
     ENV.append 'LDFLAGS', '-headerpad_max_install_names'
 
     system "./configure", "--prefix=#{prefix}"
