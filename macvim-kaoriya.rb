@@ -5,8 +5,8 @@ class MacvimKaoriya < Formula
   head 'https://github.com/splhack/macvim.git'
 
   depends_on 'cmigemo-mk' => :build
-  depends_on 'ctags-objc-ja' => :build
   depends_on 'gettext' => :build
+  depends_on 'universal-ctags' => :build
 
   option 'with-binary-release', ''
 
