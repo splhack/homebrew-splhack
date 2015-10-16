@@ -6,6 +6,11 @@ class MacvimKaoriya < Formula
 
   depends_on 'cmigemo-mk' => :build
   depends_on 'gettext' => :build
+  depends_on 'lua' => :build
+  depends_on 'lua51' => :build
+  depends_on 'luajit' => :build
+  depends_on 'python3' => :build
+  depends_on 'ruby' => :build
   depends_on 'universal-ctags' => :build
 
   option 'with-binary-release', ''
