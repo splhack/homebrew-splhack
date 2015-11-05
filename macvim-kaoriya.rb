@@ -42,10 +42,13 @@ class MacvimKaoriya < Formula
       ENV.append 'CFLAGS', '-mmacosx-version-min=10.9'
       ENV.append 'LDFLAGS', '-mmacosx-version-min=10.9 -headerpad_max_install_names'
     end
-    ENV.append 'VERSIONER_PERL_VERSION', '5.16'
+    perl_version = '5.16'
+    ENV.append 'VERSIONER_PERL_VERSION', perl_version
     ENV.append 'VERSIONER_PYTHON_VERSION', '2.7'
-    ENV.append 'vi_cv_path_python3', '/usr/local/bin/python3'
-    ENV.append 'vi_cv_path_plain_lua', '/usr/local/bin/lua-5.1'
+    ENV.append 'vi_cv_path_python3', "#{HOMEBREW_PREFIX}/bin/python3"
+    ENV.append 'vi_cv_path_plain_lua', "#{HOMEBREW_PREFIX}/bin/lua-5.1"
+    ENV.append 'vi_cv_dll_name_perl', "/System/Library/Perl/#{perl_version}/darwin-thread-multi-2level/CORE/libperl.dylib"
+    ENV.append 'vi_cv_dll_name_python3', "#{HOMEBREW_PREFIX}/Frameworks/Python.framework/Versions/3.5/Python"
 
     system './configure', "--prefix=#{prefix}",
                           '--with-features=huge',
@@ -114,6 +117,15 @@ class MacvimKaoriya < Formula
     File.open(vimdir + 'vimrc', 'a').write <<EOL
 let $LUA_DLL = simplify($VIM . '/../../Frameworks/libluajit-5.1.2.dylib')
 EOL
+
+    if build.with? 'binary-release'
+      vim = "#{macos + 'Vim'} -u NONE -U NONE"
+      system "#{vim} -c lua 'print(\"MacVim\")' -c q|grep -q -w MacVim"
+      system "#{vim} -c perl 'VIM::Msg(\"MacVim\")' -c q|grep -q -w MacVim"
+      system "#{vim} -c py 'print(\"MacVim\")' -c q|grep -q -w MacVim"
+      system "#{vim} -c py3 'print(\"MacVim\")' -c q|grep -q -w MacVim"
+      system "#{vim} -c ruby 'puts(\"MacVim\")' -c q|grep -q -w MacVim"
+    end
   end
 
   resource("CMapResources") do
