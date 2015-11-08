@@ -130,6 +130,6 @@ EOL
 
   resource("CMapResources") do
     url 'https://github.com/adobe-type-tools/cmap-resources/raw/master/cmapresources_japan1-6.zip'
-    sha1 '83b148d19d5ad6e2d15c638a14eeec77c8939451'
+    sha1 '3a64b2a6af0604926d25542e555bf8ae4a84f698'
   end
 end
