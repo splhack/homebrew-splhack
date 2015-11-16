@@ -94,6 +94,13 @@ class MacvimKaoriya < Formula
 
     cp "#{HOMEBREW_PREFIX}/bin/ctags", macos
 
+    vimprocdir = vimdir + 'plugins/vimproc'
+    rm_rf vimprocdir
+    mkdir vimprocdir
+    system "git clone --depth=1 https://github.com/Shougo/vimproc.vim.git"
+    system "make -C vimproc.vim"
+    system "tar -C vimproc.vim -cf - autoload doc lib plugin|(cd #{vimdir/'plugins/vimproc'}; tar xf -)"
+
     dict = runtime + 'dict'
     mkdir_p dict
     Dir.glob("#{HOMEBREW_PREFIX}/share/migemo/utf-8/*").each do |f|
@@ -125,10 +132,6 @@ EOL
       system "#{vim} -c py 'print(\"MacVim\")' -c q|grep -q -w MacVim"
       system "#{vim} -c py3 'print(\"MacVim\")' -c q|grep -q -w MacVim"
       system "#{vim} -c ruby 'puts(\"MacVim\")' -c q|grep -q -w MacVim"
-
-      system "git clone --depth=1 https://github.com/Shougo/vimproc.vim.git"
-      system "make -C vimproc.vim"
-      system "tar -C vimproc.vim -cf autoload doc lib plugin|(cd #{vimdir/'plugins/vimproc'}; tar xf -)"
     end
   end
 
