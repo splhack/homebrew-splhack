@@ -125,6 +125,10 @@ EOL
       system "#{vim} -c py 'print(\"MacVim\")' -c q|grep -q -w MacVim"
       system "#{vim} -c py3 'print(\"MacVim\")' -c q|grep -q -w MacVim"
       system "#{vim} -c ruby 'puts(\"MacVim\")' -c q|grep -q -w MacVim"
+
+      system "git clone --depth=1 https://github.com/Shougo/vimproc.vim.git"
+      system "make -C vimproc.vim"
+      system "tar -C vimproc.vim -cf autoload doc lib plugin|(cd #{vimdir/'plugins/vimproc'}; tar xf -)"
     end
   end
 
