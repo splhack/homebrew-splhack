@@ -128,7 +128,7 @@ EOL
 
       system "git clone --depth=1 https://github.com/Shougo/vimproc.vim.git"
       system "make -C vimproc.vim"
-      system "tar -C vimproc.vim -cf autoload doc lib plugin|(cd #{vimdir/'plugins/vimproc'}; tar xf -)"
+      system "tar -C vimproc.vim -c autoload doc lib plugin|(cd #{vimdir/'plugins/vimproc'}; tar -x -)"
     end
   end
 
