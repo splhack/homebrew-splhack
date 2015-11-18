@@ -122,7 +122,8 @@ class MacvimKaoriya < Formula
 
     cp "#{@luajit}/lib/libluajit-5.1.2.dylib", frameworks
     File.open(vimdir + 'vimrc', 'a').write <<EOL
-let $LUA_DLL = simplify($VIM . '/../../Frameworks/libluajit-5.1.2.dylib')
+" Lua interface with embedded luajit
+exec "set luadll=".simplify(expand("$VIM/../../Frameworks/libluajit-5.1.2.dylib"))
 EOL
 
     if build.with? 'binary-release'
