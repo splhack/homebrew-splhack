@@ -108,7 +108,7 @@ class MacvimKaoriya < Formula
     end
 
     resource("CMapResources").stage do
-      cp 'CMap/UniJIS-UTF8-H', runtime/'print/UniJIS-UTF8-H.ps'
+      cp 'UniJIS-UTF8-H', runtime/'print/UniJIS-UTF8-H.ps'
     end
 
     [
@@ -137,7 +137,7 @@ EOL
   end
 
   resource("CMapResources") do
-    url 'https://github.com/adobe-type-tools/cmap-resources/raw/master/cmapresources_japan1-6.zip'
-    sha1 '3a64b2a6af0604926d25542e555bf8ae4a84f698'
+    url 'https://raw.githubusercontent.com/adobe-type-tools/cmap-resources/master/cmapresources_japan1-6/CMap/UniJIS-UTF8-H'
+    sha1 'd6d945e2bee577f4f17d3ae93a11b585eff3346a'
   end
 end
