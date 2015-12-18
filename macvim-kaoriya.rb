@@ -82,9 +82,18 @@ class MacvimKaoriya < Formula
 
     system "#{macos + 'Vim'} -c 'helptags #{docja}' -c q"
 
+    unless build.with? 'binary-release'
+      mkdir 'src/MacVim/orig'
+      cp 'src/MacVim/mvim', 'src/MacVim/orig'
+    end
+
     macos.install 'src/MacVim/mvim'
     mvim = macos + 'mvim'
-    ['vimdiff', 'view', 'mvimdiff', 'mview'].each do |t|
+    [
+      'vimdiff', 'view',
+      'gvim', 'gvimdiff', 'gview',
+      'mvimdiff', 'mview'
+    ].each do |t|
       ln_s 'mvim', macos + t
     end
     inreplace mvim do |s|
@@ -92,14 +101,12 @@ class MacvimKaoriya < Formula
       s.gsub! /^(binary=).*/, "\\1\"`(cd \"$VIM_APP_DIR/MacVim.app/Contents/MacOS\"; pwd -P)`/Vim\""
     end
 
-    cp "#{HOMEBREW_PREFIX}/bin/ctags", macos
-
     vimprocdir = vimdir + 'plugins/vimproc'
     rm_rf vimprocdir
     mkdir vimprocdir
     system "git clone --depth=1 https://github.com/Shougo/vimproc.vim.git"
     system "make -C vimproc.vim"
-    system "tar -C vimproc.vim -cf - autoload doc lib plugin|(cd #{vimdir/'plugins/vimproc'}; tar xf -)"
+    system "tar -C vimproc.vim -cf - autoload doc lib plugin|(cd #{vimprocdir}; tar xf -)"
 
     dict = runtime + 'dict'
     mkdir_p dict
@@ -111,15 +118,6 @@ class MacvimKaoriya < Formula
       cp 'UniJIS-UTF8-H', runtime/'print/UniJIS-UTF8-H.ps'
     end
 
-    [
-      "#{HOMEBREW_PREFIX}/opt/gettext/lib/libintl.8.dylib",
-      "#{HOMEBREW_PREFIX}/opt/cmigemo-mk/lib/libmigemo.1.dylib",
-    ].each do |lib|
-      newname = "@executable_path/../Frameworks/#{File.basename(lib)}"
-      system "install_name_tool -change #{lib} #{newname} #{macos + 'Vim'}"
-      cp lib, frameworks
-    end
-
     cp "#{@luajit}/lib/libluajit-5.1.2.dylib", frameworks
     File.open(vimdir + 'vimrc', 'a').write <<EOL
 " Lua interface with embedded luajit
@@ -127,12 +125,37 @@ exec "set luadll=".simplify(expand("$VIM/../../Frameworks/libluajit-5.1.2.dylib"
 EOL
 
     if build.with? 'binary-release'
+      cp "#{HOMEBREW_PREFIX}/bin/ctags", macos
+
+      [
+        "#{HOMEBREW_PREFIX}/opt/gettext/lib/libintl.8.dylib",
+        "#{HOMEBREW_PREFIX}/opt/cmigemo-mk/lib/libmigemo.1.dylib",
+      ].each do |lib|
+        newname = "@executable_path/../Frameworks/#{File.basename(lib)}"
+        system "install_name_tool -change #{lib} #{newname} #{macos + 'Vim'}"
+        cp lib, frameworks
+      end
+
       vim = "#{macos + 'Vim'} -u NONE -U NONE"
       system "#{vim} -c lua 'print(\"MacVim\")' -c q|grep -q -w MacVim"
       system "#{vim} -c perl 'VIM::Msg(\"MacVim\")' -c q|grep -q -w MacVim"
       system "#{vim} -c py 'print(\"MacVim\")' -c q|grep -q -w MacVim"
       system "#{vim} -c py3 'print(\"MacVim\")' -c q|grep -q -w MacVim"
       system "#{vim} -c ruby 'puts(\"MacVim\")' -c q|grep -q -w MacVim"
+    else
+      bin = prefix + 'bin'
+      bin.install 'src/MacVim/orig/mvim'
+      mvim = bin + 'mvim'
+      [
+        'vim', 'vimdiff', 'view',
+        'gvim', 'gvimdiff', 'gview',
+        'mvimdiff', 'mview'
+      ].each do |t|
+        ln_s 'mvim', bin + t
+      end
+      inreplace mvim do |s|
+        s.gsub! /^# (VIM_APP_DIR=).*/, "\\1\"#{prefix}\""
+      end
     end
   end
 
