@@ -1,8 +1,11 @@
 require 'formula'
 
 class MacvimKaoriya < Formula
-  homepage 'http://code.google.com/p/macvim-kaoriya/'
+  homepage 'https://github.com/splhack/macvim-kaoriya'
   head 'https://github.com/splhack/macvim.git'
+
+  option 'with-properly-linked-python2-python3', 'Link with properly linked Python 2 and Python 3. You will get deadly signal SEGV if you don\'t have properly linked Python 2 and Python 3.'
+  option 'with-binary-release', ''
 
   depends_on 'cmigemo-mk' => :build
   depends_on 'gettext' => :build
@@ -12,8 +15,6 @@ class MacvimKaoriya < Formula
   depends_on 'python3' => :build
   depends_on 'ruby' => :build
   depends_on 'universal-ctags' => :build
-
-  option 'with-binary-release', ''
 
   def get_path(name)
     f = Formulary.factory(name)
@@ -50,6 +51,11 @@ class MacvimKaoriya < Formula
     ENV.append 'vi_cv_dll_name_perl', "/System/Library/Perl/#{perl_version}/darwin-thread-multi-2level/CORE/libperl.dylib"
     ENV.append 'vi_cv_dll_name_python3', "#{HOMEBREW_PREFIX}/Frameworks/Python.framework/Versions/3.5/Python"
 
+    opts = []
+    if build.with? 'properly-linked-python2-python3'
+      opts << '--with-properly-linked-python2-python3'
+    end
+
     system './configure', "--prefix=#{prefix}",
                           '--with-features=huge',
                           '--enable-multibyte',
@@ -66,7 +72,8 @@ class MacvimKaoriya < Formula
                           '--enable-luainterp=dynamic',
                           "--with-lua-prefix=#{@lua51}",
                           '--enable-lua52interp=dynamic',
-                          "--with-lua52-prefix=#{@lua}"
+                          "--with-lua52-prefix=#{@lua}",
+                          *opts
 
     system "PATH=$PATH:#{@gettext}/bin make -C src/po MSGFMT=#{@gettext}/bin/msgfmt"
     system 'make'
