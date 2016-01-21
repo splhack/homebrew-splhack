@@ -46,6 +46,8 @@ class MacvimKaoriya < Formula
     perl_version = '5.16'
     ENV.append 'VERSIONER_PERL_VERSION', perl_version
     ENV.append 'VERSIONER_PYTHON_VERSION', '2.7'
+    ENV.append 'LUA_INC', '/lua5.1'
+    ENV.append 'LUA52_INC', '/lua5.2'
     ENV.append 'vi_cv_path_python3', "#{HOMEBREW_PREFIX}/bin/python3"
     ENV.append 'vi_cv_path_plain_lua', "#{HOMEBREW_PREFIX}/bin/lua-5.1"
     ENV.append 'vi_cv_dll_name_perl', "/System/Library/Perl/#{perl_version}/darwin-thread-multi-2level/CORE/libperl.dylib"
@@ -142,13 +144,6 @@ EOL
         system "install_name_tool -change #{lib} #{newname} #{macos + 'Vim'}"
         cp lib, frameworks
       end
-
-      vim = "#{macos + 'Vim'} -u NONE -U NONE"
-      system "#{vim} -c lua 'print(\"MacVim\")' -c q|grep -q -w MacVim"
-      system "#{vim} -c perl 'VIM::Msg(\"MacVim\")' -c q|grep -q -w MacVim"
-      system "#{vim} -c py 'print(\"MacVim\")' -c q|grep -q -w MacVim"
-      system "#{vim} -c py3 'print(\"MacVim\")' -c q|grep -q -w MacVim"
-      system "#{vim} -c ruby 'puts(\"MacVim\")' -c q|grep -q -w MacVim"
     else
       bin = prefix + 'bin'
       bin.install 'src/MacVim/orig/mvim'
