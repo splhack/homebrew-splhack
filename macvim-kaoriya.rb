@@ -76,6 +76,7 @@ class MacvimKaoriya < Formula
                           '--enable-lua52interp=dynamic',
                           "--with-lua52-prefix=#{@lua}",
                           *opts
+    system "cat src/auto/config.log" if ENV['HOMEBREW_VERBOSE']
 
     system "PATH=$PATH:#{@gettext}/bin make -C src/po MSGFMT=#{@gettext}/bin/msgfmt"
     system 'make'
