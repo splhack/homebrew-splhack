@@ -39,9 +39,11 @@ class MacvimKaoriya < Formula
     raise error unless error.nil?
 
     if build.with? 'binary-release'
+      ENV.delete 'MACOSX_DEPLOYMENT_TARGET'
       ENV.append 'MACOSX_DEPLOYMENT_TARGET', '10.9'
       ENV.append 'CFLAGS', '-mmacosx-version-min=10.9'
       ENV.append 'LDFLAGS', '-mmacosx-version-min=10.9 -headerpad_max_install_names'
+      ENV.append 'XCODEFLAGS', 'MACOSX_DEPLOYMENT_TARGET=10.9'
     end
     perl_version = '5.16'
     ENV.append 'VERSIONER_PERL_VERSION', perl_version
