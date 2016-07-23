@@ -46,6 +46,7 @@ class MacvimKaoriya < Formula
       ENV.append 'XCODEFLAGS', 'MACOSX_DEPLOYMENT_TARGET=10.9'
     end
     perl_version = '5.16'
+    ENV.append 'LDFLAGS', "-L#{HOMEBREW_PREFIX}/opt/cmigemo-mk/lib"
     ENV.append 'VERSIONER_PERL_VERSION', perl_version
     ENV.append 'VERSIONER_PYTHON_VERSION', '2.7'
     ENV.append 'LUA_INC', '/lua5.1'
