@@ -6,6 +6,7 @@ class MacvimKaoriya < Formula
 
   option 'with-properly-linked-python2-python3', 'Link with properly linked Python 2 and Python 3. You will get deadly signal SEGV if you don\'t have properly linked Python 2 and Python 3.'
   option 'with-binary-release', ''
+  option 'with-override-system-vim', 'Override system vim'
 
   depends_on 'cmigemo-mk' => :build
   depends_on 'gettext' => :build
@@ -46,6 +47,7 @@ class MacvimKaoriya < Formula
       ENV.append 'XCODEFLAGS', 'MACOSX_DEPLOYMENT_TARGET=10.9'
     end
     perl_version = '5.16'
+    ENV.append 'LDFLAGS', "-L#{HOMEBREW_PREFIX}/opt/cmigemo-mk/lib"
     ENV.append 'VERSIONER_PERL_VERSION', perl_version
     ENV.append 'VERSIONER_PYTHON_VERSION', '2.7'
     ENV.append 'LUA_INC', '/lua5.1'
@@ -94,10 +96,8 @@ class MacvimKaoriya < Formula
 
     system "#{macos + 'Vim'} -c 'helptags #{docja}' -c q"
 
-    unless build.with? 'binary-release'
-      mkdir 'src/MacVim/orig'
-      cp 'src/MacVim/mvim', 'src/MacVim/orig'
-    end
+    mkdir 'src/MacVim/orig'
+    cp 'src/MacVim/mvim', 'src/MacVim/orig'
 
     macos.install 'src/MacVim/mvim'
     mvim = macos + 'mvim'
@@ -147,25 +147,23 @@ EOL
         system "install_name_tool -change #{lib} #{newname} #{macos + 'Vim'}"
         cp lib, frameworks
       end
-    else
-      bin = prefix + 'bin'
-      bin.install 'src/MacVim/orig/mvim'
-      mvim = bin + 'mvim'
-      [
-        'vim', 'vimdiff', 'view',
-        'gvim', 'gvimdiff', 'gview',
-        'mvimdiff', 'mview'
-      ].each do |t|
-        ln_s 'mvim', bin + t
-      end
-      inreplace mvim do |s|
-        s.gsub! /^# (VIM_APP_DIR=).*/, "\\1\"#{prefix}\""
-      end
+    end
+
+    bin = prefix + 'bin'
+    bin.install 'src/MacVim/orig/mvim'
+    mvim = bin + 'mvim'
+    executables = %w[mvimdiff mview mvimex gvim gvimdiff gview gvimex]
+    executables += %w[vi vim vimdiff view vimex] if build.with? 'override-system-vim'
+    executables.each do |e|
+      bin.install_symlink 'mvim' => e
+    end
+    inreplace mvim do |s|
+      s.gsub! /^# (VIM_APP_DIR=).*/, "\\1\"#{prefix}\""
     end
   end
 
   resource("CMapResources") do
     url 'https://raw.githubusercontent.com/adobe-type-tools/cmap-resources/master/cmapresources_japan1-6/CMap/UniJIS-UTF8-H'
-    sha1 'd6d945e2bee577f4f17d3ae93a11b585eff3346a'
+    sha256 '9d604a1cf0f1e10f0845ce0633efaf769f83c69b00207ef8434b2024bfff4a92'
   end
 end
