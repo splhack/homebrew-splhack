@@ -6,6 +6,7 @@ class MacvimKaoriya < Formula
 
   option 'with-properly-linked-python2-python3', 'Link with properly linked Python 2 and Python 3. You will get deadly signal SEGV if you don\'t have properly linked Python 2 and Python 3.'
   option 'with-binary-release', ''
+  option 'with-override-system-vim', 'Override system vim'
 
   depends_on 'cmigemo-mk' => :build
   depends_on 'gettext' => :build
@@ -95,10 +96,8 @@ class MacvimKaoriya < Formula
 
     system "#{macos + 'Vim'} -c 'helptags #{docja}' -c q"
 
-    unless build.with? 'binary-release'
-      mkdir 'src/MacVim/orig'
-      cp 'src/MacVim/mvim', 'src/MacVim/orig'
-    end
+    mkdir 'src/MacVim/orig'
+    cp 'src/MacVim/mvim', 'src/MacVim/orig'
 
     macos.install 'src/MacVim/mvim'
     mvim = macos + 'mvim'
@@ -148,20 +147,18 @@ EOL
         system "install_name_tool -change #{lib} #{newname} #{macos + 'Vim'}"
         cp lib, frameworks
       end
-    else
-      bin = prefix + 'bin'
-      bin.install 'src/MacVim/orig/mvim'
-      mvim = bin + 'mvim'
-      [
-        'vim', 'vimdiff', 'view',
-        'gvim', 'gvimdiff', 'gview',
-        'mvimdiff', 'mview'
-      ].each do |t|
-        ln_s 'mvim', bin + t
-      end
-      inreplace mvim do |s|
-        s.gsub! /^# (VIM_APP_DIR=).*/, "\\1\"#{prefix}\""
-      end
+    end
+
+    bin = prefix + 'bin'
+    bin.install 'src/MacVim/orig/mvim'
+    mvim = bin + 'mvim'
+    executables = %w[mvimdiff mview mvimex gvim gvimdiff gview gvimex]
+    executables += %w[vi vim vimdiff view vimex] if build.with? 'override-system-vim'
+    executables.each do |e|
+      bin.install_symlink 'mvim' => e
+    end
+    inreplace mvim do |s|
+      s.gsub! /^# (VIM_APP_DIR=).*/, "\\1\"#{prefix}\""
     end
   end
 
