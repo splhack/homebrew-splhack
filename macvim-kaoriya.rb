@@ -166,6 +166,6 @@ EOL
 
   resource("CMapResources") do
     url 'https://raw.githubusercontent.com/adobe-type-tools/cmap-resources/master/cmapresources_japan1-6/CMap/UniJIS-UTF8-H'
-    sha1 'd6d945e2bee577f4f17d3ae93a11b585eff3346a'
+    sha256 '9d604a1cf0f1e10f0845ce0633efaf769f83c69b00207ef8434b2024bfff4a92'
   end
 end
