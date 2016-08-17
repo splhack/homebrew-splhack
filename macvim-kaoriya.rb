@@ -12,7 +12,6 @@ class MacvimKaoriya < Formula
   depends_on 'lua' => :build
   depends_on 'lua51' => :build
   depends_on 'luajit' => :build
-  depends_on 'python3' => :build
   depends_on 'ruby' => :build
   depends_on 'universal-ctags' => :build
 
@@ -25,9 +24,21 @@ class MacvimKaoriya < Formula
     nil
   end
 
+  def pyenv_home_dir
+    "/Users/#{ENV['USER']}/.pyenv"
+  end
+
+  def pyenv_python2_version
+    "2.7.12"
+  end
+
+  def pyenv_python3_version
+    "3.5.2"
+  end
+
   def install
     error = nil
-    depend_formulas = %w(gettext lua lua51 luajit python3 ruby)
+    depend_formulas = %w(gettext lua lua51 luajit ruby)
     depend_formulas.each do |formula|
       var = "@" + formula.gsub("-", "_")
       instance_variable_set(var, get_path(formula))
@@ -50,10 +61,12 @@ class MacvimKaoriya < Formula
     ENV.append 'VERSIONER_PYTHON_VERSION', '2.7'
     ENV.append 'LUA_INC', '/lua5.1'
     ENV.append 'LUA52_INC', '/lua5.2'
-    ENV.append 'vi_cv_path_python3', "#{HOMEBREW_PREFIX}/bin/python3"
     ENV.append 'vi_cv_path_plain_lua', "#{HOMEBREW_PREFIX}/bin/lua-5.1"
+    ENV.append 'vi_cv_path_python',      "#{pyenv_home_dir}/versions/#{pyenv_python2_version}/bin/python2"
+    ENV.append 'vi_cv_dll_name_python',  "#{pyenv_home_dir}/versions/#{pyenv_python2_version}/lib/libpython2.7.dylib"
+    ENV.append 'vi_cv_path_python3',     "#{pyenv_home_dir}/versions/#{pyenv_python3_version}/bin/python3"
+    ENV.append 'vi_cv_dll_name_python3', "#{pyenv_home_dir}/versions/#{pyenv_python3_version}/lib/libpython3.5m.dylib"
     ENV.append 'vi_cv_dll_name_perl', "/System/Library/Perl/#{perl_version}/darwin-thread-multi-2level/CORE/libperl.dylib"
-    ENV.append 'vi_cv_dll_name_python3', "#{HOMEBREW_PREFIX}/Frameworks/Python.framework/Versions/3.5/Python"
 
     opts = []
     if build.with? 'properly-linked-python2-python3'
