@@ -50,6 +50,7 @@ class MacvimKaoriya < Formula
     ENV.append 'VERSIONER_PYTHON_VERSION', '2.7'
     ENV.append 'LUA_INC', '/lua5.1'
     ENV.append 'LUA52_INC', '/lua5.2'
+    ENV.append 'vi_cv_path_python', '/usr/bin/python'
     ENV.append 'vi_cv_path_python3', "#{HOMEBREW_PREFIX}/bin/python3"
     ENV.append 'vi_cv_path_plain_lua', "#{HOMEBREW_PREFIX}/bin/lua-5.1"
     ENV.append 'vi_cv_dll_name_perl', "/System/Library/Perl/#{perl_version}/darwin-thread-multi-2level/CORE/libperl.dylib"
