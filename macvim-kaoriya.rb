@@ -54,7 +54,7 @@ class MacvimKaoriya < Formula
     ENV.append 'vi_cv_path_python3', "#{HOMEBREW_PREFIX}/bin/python3"
     ENV.append 'vi_cv_path_plain_lua', "#{HOMEBREW_PREFIX}/bin/lua-5.1"
     ENV.append 'vi_cv_dll_name_perl', "/System/Library/Perl/#{perl_version}/darwin-thread-multi-2level/CORE/libperl.dylib"
-    ENV.append 'vi_cv_dll_name_python3', "#{HOMEBREW_PREFIX}/Frameworks/Python.framework/Versions/3.5/Python"
+    ENV.append 'vi_cv_dll_name_python3', "#{HOMEBREW_PREFIX}/Frameworks/Python.framework/Versions/3.6/Python"
 
     opts = []
     if build.with? 'properly-linked-python2-python3'
