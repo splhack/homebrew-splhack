@@ -89,6 +89,7 @@ class MacvimKaoriya < Formula
     app = prefix + 'MacVim.app/Contents'
     frameworks = app + 'Frameworks'
     macos = app + 'MacOS'
+    bin = app + 'bin'
     vimdir = app + 'Resources/vim'
     runtime = vimdir + 'runtime'
     docja = vimdir + 'plugins/vimdoc-ja/doc'
@@ -100,17 +101,17 @@ class MacvimKaoriya < Formula
       cp 'src/MacVim/mvim', 'src/MacVim/orig'
     end
 
-    macos.install 'src/MacVim/mvim'
-    mvim = macos + 'mvim'
+    bin.install 'src/MacVim/mvim'
+    mvim = bin + 'mvim'
     [
-      'vimdiff', 'view',
+      'vim', 'vimdiff', 'view',
       'gvim', 'gvimdiff', 'gview',
       'mvimdiff', 'mview'
     ].each do |t|
-      ln_s 'mvim', macos + t
+      ln_s 'mvim', bin + t
     end
     inreplace mvim do |s|
-      s.gsub! /^# (VIM_APP_DIR=).*/, "\\1`dirname \"$0\"`/../../.."
+      s.gsub! /^# VIM_APP_DIR=.*/, 'if [ -L $0 ]; then VIM_APP_DIR=`dirname "$(readlink $0)"`/../../..; else VIM_APP_DIR=`dirname "$0"`/../../..; fi'
       s.gsub! /^(binary=).*/, "\\1\"`(cd \"$VIM_APP_DIR/MacVim.app/Contents/MacOS\"; pwd -P)`/Vim\""
     end
 
