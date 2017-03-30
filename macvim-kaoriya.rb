@@ -94,8 +94,6 @@ class MacvimKaoriya < Formula
     runtime = vimdir + 'runtime'
     docja = vimdir + 'plugins/vimdoc-ja/doc'
 
-    system "#{macos + 'Vim'} -c 'helptags #{docja}' -c q"
-
     unless build.with? 'binary-release'
       mkdir 'src/MacVim/orig'
       cp 'src/MacVim/mvim', 'src/MacVim/orig'
