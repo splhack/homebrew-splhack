@@ -10,7 +10,7 @@ class MacvimKaoriya < Formula
   depends_on 'cmigemo-mk' => :build
   depends_on 'gettext' => :build
   depends_on 'lua' => :build
-  depends_on 'lua51' => :build
+  #depends_on 'lua51' => :build Homebrew doesn't allow this
   depends_on 'luajit' => :build
   depends_on 'python3' => :build
   depends_on 'ruby' => :build
@@ -89,28 +89,31 @@ class MacvimKaoriya < Formula
     app = prefix + 'MacVim.app/Contents'
     frameworks = app + 'Frameworks'
     macos = app + 'MacOS'
-    bin = app + 'bin'
     vimdir = app + 'Resources/vim'
     runtime = vimdir + 'runtime'
-    docja = vimdir + 'plugins/vimdoc-ja/doc'
 
-    unless build.with? 'binary-release'
-      mkdir 'src/MacVim/orig'
-      cp 'src/MacVim/mvim', 'src/MacVim/orig'
-    end
+    appbin = app + "bin"
+    mkdir_p appbin
 
-    bin.install 'src/MacVim/mvim'
-    mvim = bin + 'mvim'
+    bin = prefix + 'bin'
+    mkdir_p bin
+
+    mvim = appbin + "mvim"
+    cp 'src/MacVim/mvim.sh', mvim
+    chmod 0755, mvim
+
     [
-      'vim', 'vimdiff', 'view',
-      'gvim', 'gvimdiff', 'gview',
-      'mvimdiff', 'mview'
-    ].each do |t|
-      ln_s 'mvim', bin + t
-    end
-    inreplace mvim do |s|
-      s.gsub! /^# VIM_APP_DIR=.*/, 'if [ -L $0 ]; then VIM_APP_DIR=`dirname "$(readlink $0)"`/../../..; else VIM_APP_DIR=`dirname "$0"`/../../..; fi'
-      s.gsub! /^(binary=).*/, "\\1\"`(cd \"$VIM_APP_DIR/MacVim.app/Contents/MacOS\"; pwd -P)`/Vim\""
+      {:path => appbin, :src => 'mvim'},
+      {:path => bin, :src => '../MacVim.app/Contents/bin/mvim'},
+    ].each do |link|
+      [
+        'vim', 'vimdiff', 'view',
+        'gvim', 'gvimdiff', 'gview',
+        'mvim', 'mvimdiff', 'mview'
+      ].each do |t|
+        dst = link[:path] + t
+        ln_s link[:src], dst unless File.exists? dst
+      end
     end
 
     vimprocdir = vimdir + 'plugins/vimproc'
@@ -146,20 +149,6 @@ EOL
         newname = "@executable_path/../Frameworks/#{File.basename(lib)}"
         system "install_name_tool -change #{lib} #{newname} #{macos + 'Vim'}"
         cp lib, frameworks
-      end
-    else
-      bin = prefix + 'bin'
-      bin.install 'src/MacVim/orig/mvim'
-      mvim = bin + 'mvim'
-      [
-        'vim', 'vimdiff', 'view',
-        'gvim', 'gvimdiff', 'gview',
-        'mvimdiff', 'mview'
-      ].each do |t|
-        ln_s 'mvim', bin + t
-      end
-      inreplace mvim do |s|
-        s.gsub! /^# (VIM_APP_DIR=).*/, "\\1\"#{prefix}\""
       end
     end
   end
