@@ -93,27 +93,15 @@ class MacvimKaoriya < Formula
     runtime = vimdir + 'runtime'
 
     appbin = app + "bin"
-    mkdir_p appbin
-
     bin = prefix + 'bin'
     mkdir_p bin
 
-    mvim = appbin + "mvim"
-    cp 'src/MacVim/mvim.sh', mvim
-    chmod 0755, mvim
-
     [
-      {:path => appbin, :src => 'mvim'},
-      {:path => bin, :src => '../MacVim.app/Contents/bin/mvim'},
-    ].each do |link|
-      [
-        'vim', 'vimdiff', 'view',
-        'gvim', 'gvimdiff', 'gview',
-        'mvim', 'mvimdiff', 'mview'
-      ].each do |t|
-        dst = link[:path] + t
-        ln_s link[:src], dst unless File.exists? dst
-      end
+      'vim', 'vimdiff', 'view',
+      'gvim', 'gvimdiff', 'gview',
+      'mvim', 'mvimdiff', 'mview'
+    ].each do |t|
+      ln_s '../MacVim.app/Contents/bin/mvim', bin + t
     end
 
     vimprocdir = vimdir + 'plugins/vimproc'
