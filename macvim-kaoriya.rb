@@ -10,7 +10,7 @@ class MacvimKaoriya < Formula
   depends_on 'cmigemo-mk' => :build
   depends_on 'gettext' => :build
   depends_on 'lua' => :build
-  #depends_on 'lua51' => :build Homebrew doesn't allow this
+  #depends_on 'lua@5.1' => :build Homebrew doesn't allow this
   depends_on 'luajit' => :build
   depends_on 'python3' => :build
   depends_on 'ruby' => :build
@@ -27,12 +27,12 @@ class MacvimKaoriya < Formula
 
   def install
     error = nil
-    depend_formulas = %w(gettext lua lua51 luajit python3 ruby)
+    depend_formulas = %w(cmigemo-mk gettext lua lua@5.1 luajit python3 ruby)
     depend_formulas.each do |formula|
-      var = "@" + formula.gsub("-", "_")
+      var = "@" + formula.gsub('-', '_').gsub('@', '').gsub('.', '')
       instance_variable_set(var, get_path(formula))
       if instance_variable_get(var).nil?
-        error ||= "brew install " + depend_formulas.join(" ") + "\n"
+        error ||= 'brew install ' + depend_formulas.join(' ') + "\n"
         error += "can't find #{formula}\n"
       end
     end
@@ -46,13 +46,16 @@ class MacvimKaoriya < Formula
       ENV.append 'XCODEFLAGS', 'MACOSX_DEPLOYMENT_TARGET=10.9'
     end
     perl_version = '5.16'
+    ENV.delete 'CC'
+    ENV.append 'CC', '/usr/bin/clang'
+    ENV.append 'CPPFLAGS', "-I#{@cmigemo_mk}/include"
     ENV.append 'VERSIONER_PERL_VERSION', perl_version
     ENV.append 'VERSIONER_PYTHON_VERSION', '2.7'
     ENV.append 'LUA_INC', '/lua5.1'
     ENV.append 'LUA52_INC', '/lua5.2'
     ENV.append 'vi_cv_path_python', '/usr/bin/python'
     ENV.append 'vi_cv_path_python3', "#{HOMEBREW_PREFIX}/bin/python3"
-    ENV.append 'vi_cv_path_plain_lua', "#{HOMEBREW_PREFIX}/bin/lua-5.1"
+    ENV.append 'vi_cv_path_plain_lua', "#{@lua51}/bin/lua-5.1"
     ENV.append 'vi_cv_dll_name_perl', "/System/Library/Perl/#{perl_version}/darwin-thread-multi-2level/CORE/libperl.dylib"
     ENV.append 'vi_cv_dll_name_python3', "#{HOMEBREW_PREFIX}/Frameworks/Python.framework/Versions/3.6/Python"
 
@@ -60,6 +63,8 @@ class MacvimKaoriya < Formula
     if build.with? 'properly-linked-python2-python3'
       opts << '--with-properly-linked-python2-python3'
     end
+
+    system "env" if ENV['HOMEBREW_VERBOSE']
 
     system './configure', "--prefix=#{prefix}",
                           '--with-features=huge',
@@ -79,6 +84,7 @@ class MacvimKaoriya < Formula
                           '--enable-lua52interp=dynamic',
                           "--with-lua52-prefix=#{@lua}",
                           *opts
+    system "cat src/auto/config.mk" if ENV['HOMEBREW_VERBOSE']
     system "cat src/auto/config.log" if ENV['HOMEBREW_VERBOSE']
 
     system "PATH=$PATH:#{@gettext}/bin make -C src/po MSGFMT=#{@gettext}/bin/msgfmt"
