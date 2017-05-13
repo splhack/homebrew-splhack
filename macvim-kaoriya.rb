@@ -27,7 +27,8 @@ class MacvimKaoriya < Formula
 
   def install
     error = nil
-    depend_formulas = %w(cmigemo-mk gettext lua lua@5.1 luajit python3 ruby)
+    depend_formulas =
+      %w(cmigemo-mk gettext lua lua@5.1 luajit python3 ruby universal-ctags)
     depend_formulas.each do |formula|
       var = "@" + formula.gsub('-', '_').gsub('@', '').gsub('.', '')
       instance_variable_set(var, get_path(formula))
@@ -48,16 +49,17 @@ class MacvimKaoriya < Formula
     perl_version = '5.16'
     ENV.delete 'CC'
     ENV.append 'CC', '/usr/bin/clang'
-    ENV.append 'CPPFLAGS', "-I#{@cmigemo_mk}/include"
+    ENV.append 'CPPFLAGS', "-I#{@cmigemo_mk}/include -I#{@gettext}/include"
+    ENV.append 'LDFLAGS', "-L#{@gettext}/lib"
     ENV.append 'VERSIONER_PERL_VERSION', perl_version
     ENV.append 'VERSIONER_PYTHON_VERSION', '2.7'
     ENV.append 'LUA_INC', '/lua5.1'
     ENV.append 'LUA52_INC', '/lua5.2'
     ENV.append 'vi_cv_path_python', '/usr/bin/python'
-    ENV.append 'vi_cv_path_python3', "#{HOMEBREW_PREFIX}/bin/python3"
+    ENV.append 'vi_cv_path_python3', "#{@python3}/bin/python3"
     ENV.append 'vi_cv_path_plain_lua', "#{@lua51}/bin/lua-5.1"
     ENV.append 'vi_cv_dll_name_perl', "/System/Library/Perl/#{perl_version}/darwin-thread-multi-2level/CORE/libperl.dylib"
-    ENV.append 'vi_cv_dll_name_python3', "#{HOMEBREW_PREFIX}/Frameworks/Python.framework/Versions/3.6/Python"
+    ENV.append 'vi_cv_dll_name_python3', "#{@python3}/Frameworks/Python.framework/Versions/3.6/Python"
 
     opts = []
     if build.with? 'properly-linked-python2-python3'
@@ -119,7 +121,7 @@ class MacvimKaoriya < Formula
 
     dict = runtime + 'dict'
     mkdir_p dict
-    Dir.glob("#{HOMEBREW_PREFIX}/share/migemo/utf-8/*").each do |f|
+    Dir.glob("#{@cmigemo_mk}/share/migemo/utf-8/*").each do |f|
       cp f, dict
     end
 
@@ -134,11 +136,11 @@ exec "set luadll=".simplify(expand("$VIM/../../Frameworks/libluajit-5.1.2.dylib"
 EOL
 
     if build.with? 'binary-release'
-      cp "#{HOMEBREW_PREFIX}/bin/ctags", macos
+      cp "#{@universal_ctags}/bin/ctags", macos
 
       [
-        "#{HOMEBREW_PREFIX}/opt/gettext/lib/libintl.8.dylib",
-        "#{HOMEBREW_PREFIX}/opt/cmigemo-mk/lib/libmigemo.1.dylib",
+        "#{@gettext}/lib/libintl.8.dylib",
+        "#{@cmigemo_mk}/lib/libmigemo.1.dylib",
       ].each do |lib|
         newname = "@executable_path/../Frameworks/#{File.basename(lib)}"
         system "install_name_tool -change #{lib} #{newname} #{macos + 'Vim'}"
