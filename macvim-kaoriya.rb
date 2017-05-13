@@ -139,8 +139,8 @@ EOL
       cp "#{@universal_ctags}/bin/ctags", macos
 
       [
-        "#{@gettext}/lib/libintl.8.dylib",
-        "#{@cmigemo_mk}/lib/libmigemo.1.dylib",
+        "#{HOMEBREW_PREFIX}/opt/gettext/lib/libintl.8.dylib",
+        "#{HOMEBREW_PREFIX}/opt/cmigemo-mk/lib/libmigemo.1.dylib",
       ].each do |lib|
         newname = "@executable_path/../Frameworks/#{File.basename(lib)}"
         system "install_name_tool -change #{lib} #{newname} #{macos + 'Vim'}"
