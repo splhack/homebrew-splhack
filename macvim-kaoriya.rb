@@ -113,13 +113,6 @@ class MacvimKaoriya < Formula
       ln_s '../MacVim.app/Contents/bin/mvim', bin + t
     end
 
-    vimprocdir = vimdir + 'plugins/vimproc'
-    rm_rf vimprocdir
-    mkdir vimprocdir
-    system "git clone --depth=1 https://github.com/Shougo/vimproc.vim.git"
-    system "make -C vimproc.vim"
-    system "tar -C vimproc.vim -cf - autoload doc lib plugin|(cd #{vimprocdir}; tar xf -)"
-
     dict = runtime + 'dict'
     mkdir_p dict
     Dir.glob("#{@cmigemo_mk}/share/migemo/utf-8/*").each do |f|
@@ -152,6 +145,6 @@ EOL
 
   resource("CMapResources") do
     url 'https://raw.githubusercontent.com/adobe-type-tools/cmap-resources/master/cmapresources_japan1-6/CMap/UniJIS-UTF8-H'
-    sha256 '2649f1865f2192de9709c46f63886bc4c936ee631e62ddb944619af11667117a'
+    sha256 '29dfdbfe5dc6e9bae41dfc6ae2c1cf7b667f5b69b897c8f14eb91da493937673'
   end
 end
