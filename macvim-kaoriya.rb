@@ -54,7 +54,7 @@ class MacvimKaoriya < Formula
     ENV.append 'VERSIONER_PERL_VERSION', perl_version
     ENV.append 'VERSIONER_PYTHON_VERSION', '2.7'
     ENV.append 'LUA_INC', '/lua5.1'
-    ENV.append 'LUA52_INC', '/lua5.2'
+    ENV.append 'LUA52_INC', '/lua5.3'
     ENV.append 'vi_cv_path_python', '/usr/bin/python'
     ENV.append 'vi_cv_path_python3', "#{@python3}/bin/python3"
     ENV.append 'vi_cv_path_plain_lua', "#{@lua51}/bin/lua-5.1"
