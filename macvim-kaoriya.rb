@@ -12,7 +12,7 @@ class MacvimKaoriya < Formula
   depends_on 'lua' => :build
   #depends_on 'lua@5.1' => :build Homebrew doesn't allow this
   depends_on 'luajit' => :build
-  depends_on 'python3' => :build
+  depends_on 'python' => :build
   depends_on 'ruby' => :build
   depends_on 'universal-ctags' => :build
 
@@ -28,7 +28,7 @@ class MacvimKaoriya < Formula
   def install
     error = nil
     depend_formulas =
-      %w(cmigemo-mk gettext lua lua@5.1 luajit python3 ruby universal-ctags)
+      %w(cmigemo-mk gettext lua lua@5.1 luajit python ruby universal-ctags)
     depend_formulas.each do |formula|
       var = "@" + formula.gsub('-', '_').gsub('@', '').gsub('.', '')
       instance_variable_set(var, get_path(formula))
@@ -56,10 +56,10 @@ class MacvimKaoriya < Formula
     ENV.append 'LUA_INC', '/lua5.1'
     ENV.append 'LUA52_INC', '/lua5.3'
     ENV.append 'vi_cv_path_python', '/usr/bin/python'
-    ENV.append 'vi_cv_path_python3', "#{@python3}/bin/python3"
+    ENV.append 'vi_cv_path_python3', "#{@python}/bin/python3"
     ENV.append 'vi_cv_path_plain_lua', "#{@lua51}/bin/lua-5.1"
     ENV.append 'vi_cv_dll_name_perl', "/System/Library/Perl/#{perl_version}/darwin-thread-multi-2level/CORE/libperl.dylib"
-    ENV.append 'vi_cv_dll_name_python3', "#{@python3}/Frameworks/Python.framework/Versions/3.6/Python"
+    ENV.append 'vi_cv_dll_name_python3', "#{@python}/Frameworks/Python.framework/Versions/3.6/Python"
 
     opts = []
     if build.with? 'properly-linked-python2-python3'
