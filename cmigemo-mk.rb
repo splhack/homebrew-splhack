@@ -16,7 +16,7 @@ class CmigemoMk < Formula
     cd 'dict' do
       system "make utf-8"
     end
-    ENV.j1 # Install can fail on multi-core machines unless serialized
+    ENV.deparallelize # Install can fail on multi-core machines unless serialized
     system "make osx-install"
   end
 end
